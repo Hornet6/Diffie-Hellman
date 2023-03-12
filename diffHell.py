@@ -1,4 +1,5 @@
 import random
+from randomPrime import RandomPrime
 def difHellKey(p,g,r):
     print("DIFFHELL")
 
@@ -10,25 +11,22 @@ def isPrime(x):
         if (x%i) == 0:
           return False
     return True
-def randomPrime(low,high):
-    #this needs to be better
-    primes = [i for i in range(low,high) if isPrime(i)]
-    n = random.choice(primes)
-    return n
-def genLargePrime(low,high):
-    q = randomPrime(int(low/2-1),int(high/2-1))
-    return q*2 + 1 
+
 def genPrivateKey(p):
     x = random.radint(1,p)
     return x
-print(randomPrime(4,30))
 def genSharedKey(pubKeyB,x,p):
     return (pubKeyB**x)%p
 
-def generateGenerator(p):
-    
-# P is a large random prime
-# G is a 
+def generate_P_pair(size):
+    x = RandomPrime(100)
+    while True:
+        q=x.generatePrime(size-1)
+        q=89005330586580187460447797262694947558585802190639423605895969138137604727030363533383102327238888063774652063166868052487205726446858692415663309318944713324209073763121067320962543994427197072891573532085233436592698772764104874000444566811890847095969397737937311703687348229853815083445001173331555921481
+        if x.primeTest(q*2+1):
+            return q
+# P is a large random prime in the form p=2*q +1 where q is also prime
+# G is 2
 
 #1.agree on P and G
 #2.privKey = genPrivateKey(p)
@@ -41,13 +39,30 @@ def generateGenerator(p):
 
 #local example:
 
-p = genLargePrime(10**2,10**3)
-c=0
-ip=0
-for i in range(1,10000):
-    p = genLargePrime(10**2,10**3)
-    # print(p,isPrime(p))
-    if isPrime(p):
-        ip+=1
-    c+=1
-print(c,ip)
+
+p = 89005330586580187460447797262694947558585802190639423605895969138137604727030363533383102327238888063774652063166868052487205726446858692415663309318944713324209073763121067320962543994427197072891573532085233436592698772764104874000444566811890847095969397737937311703687348229853815083445001173331555921481
+# p = generate_P_pair(1024)
+print(p)
+g = 2
+
+# private keys
+# A
+Xa = random.randrange(p//2,p)
+# B
+Xb = random.randrange(p//2,p)
+
+
+#private keys
+# A
+Ya = pow(g,Xa,p)
+# B
+Yb = pow(g,Xb,p)
+
+# shared key
+# A
+Za = pow(Yb,Xa,p)
+# B
+Zb = pow(Ya,Xb,p)
+
+print(Za==Zb)
+
