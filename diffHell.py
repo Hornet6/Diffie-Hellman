@@ -39,30 +39,51 @@ def generate_P_pair(size):
 
 #local example:
 
+def test():
+    p = 89005330586580187460447797262694947558585802190639423605895969138137604727030363533383102327238888063774652063166868052487205726446858692415663309318944713324209073763121067320962543994427197072891573532085233436592698772764104874000444566811890847095969397737937311703687348229853815083445001173331555921481
+    # p = generate_P_pair(1024)
+    g = 2
 
-p = 89005330586580187460447797262694947558585802190639423605895969138137604727030363533383102327238888063774652063166868052487205726446858692415663309318944713324209073763121067320962543994427197072891573532085233436592698772764104874000444566811890847095969397737937311703687348229853815083445001173331555921481
-# p = generate_P_pair(1024)
-print(p)
-g = 2
+    #private keys
+    # A
+    Xa = random.randrange(p//10,p)
+    # B
+    Xb = random.randrange(p//10,p)
 
-# private keys
-# A
-Xa = random.randrange(p//2,p)
-# B
-Xb = random.randrange(p//2,p)
+    #public keys
+    # A
+    Ya = pow(g,Xa,p)
+    # B
+    Yb = pow(g,Xb,p)
 
+    # shared key
+    # A
+    Za = pow(Yb,Xa,p)
+    # B
+    Zb = pow(Ya,Xb,p)
 
-#private keys
-# A
-Ya = pow(g,Xa,p)
-# B
-Yb = pow(g,Xb,p)
+class DiffHell():
+    def __init__(self,privKey=None,pubKey=None):
+        self.p = 89005330586580187460447797262694947558585802190639423605895969138137604727030363533383102327238888063774652063166868052487205726446858692415663309318944713324209073763121067320962543994427197072891573532085233436592698772764104874000444566811890847095969397737937311703687348229853815083445001173331555921481
+        self.g = 2
+        if privKey == None or pubKey == None:
+            self.generate_new_local_keys()
+        else:
+            # private
+            self.Xa = privKey
+            # public
+            self.Ya = pubKey
 
-# shared key
-# A
-Za = pow(Yb,Xa,p)
-# B
-Zb = pow(Ya,Xb,p)
-
-print(Za==Zb)
+    def generate_new_local_keys(self):
+        self.Xa = random.randrange(self.p//10,self.p)
+        self.Ya = pow(self.g,self.Xa,self.p)
+        return self.Xa,self.Ya
+    def calculate_shared_key(self,foreign_public_key):
+        Za = pow(foreign_public_key,self.Xa,self.p)
+        return Za
+    
+    def get_private_key(self):
+        return self.Xa
+    def get_public_key(self):
+        return self.Ya
 
